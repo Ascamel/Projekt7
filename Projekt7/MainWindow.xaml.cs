@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -131,7 +132,23 @@ namespace Projekt7
 
             NewPoint = e.GetPosition((UIElement)sender);
 
-            if(!PolygonButton7.IsEnabled)
+            if (!MoveButton7.IsEnabled)
+            {
+                if (e.OriginalSource is Polygon)
+                {
+                    GetSelectedFigure((Polygon)e.OriginalSource);
+                }
+                LineX.Text = Math.Round(NewPoint.X).ToString();
+                LineY.Text = Math.Round(NewPoint.Y).ToString();
+            }
+
+            if (!RotateButton7.IsEnabled)
+            {
+                RPointX.Text = Math.Round(NewPoint.X).ToString();
+                RPointY.Text = Math.Round(NewPoint.Y).ToString();
+            }
+
+            if (!PolygonButton7.IsEnabled)
             {
                 points.Add(NewPoint);
             }
@@ -141,13 +158,13 @@ namespace Projekt7
                 selectedShape = (Shape)e.OriginalSource;
             }
 
-            if (!MoveButton7.IsEnabled)
+/*            if (!MoveButton7.IsEnabled)
             {
                 if (e.OriginalSource is Polygon)
                 {
                     GetSelectedFigure((Polygon)e.OriginalSource);
                 }
-            }
+            }*/
         }
 
         private void GetSelectedFigure(Shape figure)
@@ -462,14 +479,16 @@ namespace Projekt7
                     PointCollection NewPoints = new();
 
                     double nAngle = (Convert.ToDouble(RAngle2.Text) * Math.PI) / 180;
-                  
+                    double angle = (Convert.ToDouble(RAngle2.Text));
+
+
                     RotateMatrix = new double[,] {
                         {Math.Cos(nAngle), -Math.Sin(nAngle), 0},
                         {Math.Sin(nAngle), Math.Cos(nAngle), 0},
                         {0,0,1}
                     };
 
-                    double[] ResultMatrix = new double[20];
+                    double[] ResultMatrix = new double[3];
                     double[,] ResultMatrix2 = new double[3,3];
 
                     double Xr = Convert.ToDouble(RPointX2.Text);
@@ -490,18 +509,27 @@ namespace Projekt7
                     for (int i = 0; i < points.Count; i++)
                     {
                         Point ToAdd = new();
-                        double[] PointMatrix = new double[] { points[i].X, points[i].Y, 1 };
+                        // double[] PointMatrix = new double[] { points[i].X, points[i].Y, 1 };
+                        // double[] PointMatrix = new double[] { Xr + (points[i].X - Xr) * Math.Cos(nAngle) - (points[i].Y - Yr) * Math.Sin(nAngle), Yr + (points[i].X - Xr) * Math.Sin(nAngle) + (points[i].Y - Yr) * Math.Cos(nAngle), 1 };
 
-                        ResultMatrix2 =MultiplyMatrix3x3(MultiplyMatrix3x3(FirstMatrix, RotateMatrix), ThirdMatrix);
+                       // double Xnew = Xr + (points[i].X - Xr) * Math.Cos(nAngle) - (points[i].Y - Yr) * Math.Sin(nAngle);
+                      //  double Ynew = Yr + (points[i].X - Xr) * Math.Sin(nAngle) + (points[i].Y - Yr) * Math.Cos(nAngle);
+
+                        //double[] PointMatrix = new double[] {Xr,Yr,1 };
+                        double[] PointMatrix = new double[] { Xr + (points[i].X - Xr) * Math.Cos((Math.PI * angle) / 180.0) - (points[i].Y - Yr) * Math.Sin((Math.PI * angle) / 180.0), Yr + (points[i].X - Xr) * Math.Sin((Math.PI * angle) / 180.0) + (points[i].Y - Yr) * Math.Cos((Math.PI * angle) / 180.0), 1 };
+
+                        // double[] PointMatrix = new double[] { Xr + (points[i].X - Xr) * Math.Cos((Math.PI * nAngle) / 180.0) - (points[i].Y - Yr) * Math.Sin((Math.PI * nAngle) / 180.0), Yr + (points[i].X - Xr) * Math.Sin((Math.PI * nAngle) / 180.0) + (points[i].Y - Yr) * Math.Cos((Math.PI * nAngle) / 180.0), 1 };
+                        // ResultMatrix2 =MultiplyMatrix3x3(MultiplyMatrix3x3(FirstMatrix, RotateMatrix), ThirdMatrix);
+                        // ResultMatrix = MultiplyMatrix(ResultMatrix2, PointMatrix);
+
 
                         ResultMatrix = MultiplyMatrix(RotateMatrix, PointMatrix);
+                        ////MOVE CANVAS
 
                         ToAdd.X = ResultMatrix[0] / ResultMatrix[2];
                         ToAdd.Y = ResultMatrix[1] / ResultMatrix[2];
-
                         NewPoints.Add(ToAdd);
                     }
-
                     points = NewPoints;
                     selectedPolygon.Points = NewPoints;
                 }
@@ -510,8 +538,7 @@ namespace Projekt7
             {
                 if (selectedPolygon!=null && ScaleX2.Text != "" && ScaleY2.Text!="" && SPointX2.Text!="" && SPointY2.Text!="")
                 {
-                    
-                        PointCollection NewPoints = new();
+                    PointCollection NewPoints = new();
 
                         ScaleMatrix = new double[,] {
                         {Convert.ToDouble(ScaleX2.Text), 0, 0},
