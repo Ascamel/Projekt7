@@ -126,7 +126,7 @@ namespace Projekt7
                 }
             }
         }
-
+        
         private void Canva7MouseDown(object sender, MouseButtonEventArgs e)
         {
 
@@ -157,14 +157,12 @@ namespace Projekt7
             {
                 selectedShape = (Shape)e.OriginalSource;
             }
-
-/*            if (!MoveButton7.IsEnabled)
+            if (!ScaleButton7.IsEnabled)
             {
-                if (e.OriginalSource is Polygon)
-                {
-                    GetSelectedFigure((Polygon)e.OriginalSource);
-                }
-            }*/
+                SPointX.Text = Math.Round(NewPoint.X).ToString();
+                SPointY.Text = Math.Round(NewPoint.Y).ToString();
+            }
+
         }
 
         private void GetSelectedFigure(Shape figure)
@@ -509,22 +507,10 @@ namespace Projekt7
                     for (int i = 0; i < points.Count; i++)
                     {
                         Point ToAdd = new();
-                        // double[] PointMatrix = new double[] { points[i].X, points[i].Y, 1 };
-                        // double[] PointMatrix = new double[] { Xr + (points[i].X - Xr) * Math.Cos(nAngle) - (points[i].Y - Yr) * Math.Sin(nAngle), Yr + (points[i].X - Xr) * Math.Sin(nAngle) + (points[i].Y - Yr) * Math.Cos(nAngle), 1 };
-
-                       // double Xnew = Xr + (points[i].X - Xr) * Math.Cos(nAngle) - (points[i].Y - Yr) * Math.Sin(nAngle);
-                      //  double Ynew = Yr + (points[i].X - Xr) * Math.Sin(nAngle) + (points[i].Y - Yr) * Math.Cos(nAngle);
-
-                        //double[] PointMatrix = new double[] {Xr,Yr,1 };
                         double[] PointMatrix = new double[] { Xr + (points[i].X - Xr) * Math.Cos((Math.PI * angle) / 180.0) - (points[i].Y - Yr) * Math.Sin((Math.PI * angle) / 180.0), Yr + (points[i].X - Xr) * Math.Sin((Math.PI * angle) / 180.0) + (points[i].Y - Yr) * Math.Cos((Math.PI * angle) / 180.0), 1 };
-
-                        // double[] PointMatrix = new double[] { Xr + (points[i].X - Xr) * Math.Cos((Math.PI * nAngle) / 180.0) - (points[i].Y - Yr) * Math.Sin((Math.PI * nAngle) / 180.0), Yr + (points[i].X - Xr) * Math.Sin((Math.PI * nAngle) / 180.0) + (points[i].Y - Yr) * Math.Cos((Math.PI * nAngle) / 180.0), 1 };
-                        // ResultMatrix2 =MultiplyMatrix3x3(MultiplyMatrix3x3(FirstMatrix, RotateMatrix), ThirdMatrix);
-                        // ResultMatrix = MultiplyMatrix(ResultMatrix2, PointMatrix);
 
 
                         ResultMatrix = MultiplyMatrix(RotateMatrix, PointMatrix);
-                        ////MOVE CANVAS
 
                         ToAdd.X = ResultMatrix[0] / ResultMatrix[2];
                         ToAdd.Y = ResultMatrix[1] / ResultMatrix[2];
